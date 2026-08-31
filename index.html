@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>my-drive — Gabriel Vaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400&display=swap">
+<style>
+:root{
+  --paper:#EFF2F4; --surface:#FFFFFF; --surface-2:#E7EBEF;
+  --ink:#131E2B; --ink-2:#5C6B7A; --ink-3:#8593A0;
+  --rule:#D3DAE1; --accent:#2C5871;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E151D; --surface:#151E28; --surface-2:#1C2733;
+    --ink:#E6ECF1; --ink-2:#A0AEBB; --ink-3:#71818F;
+    --rule:#2A3743; --accent:#7FB2CE;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E151D; --surface:#151E28; --surface-2:#1C2733;
+  --ink:#E6ECF1; --ink-2:#A0AEBB; --ink-3:#71818F;
+  --rule:#2A3743; --accent:#7FB2CE;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+header{padding:80px 0 34px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-2);margin:0 0 18px;
+}
+h1{
+  font-family:"Archivo",sans-serif;font-size:clamp(36px,6vw,58px);line-height:1;
+  letter-spacing:-.028em;font-weight:800;margin:0 0 16px;
+}
+header p{color:var(--ink-2);margin:0;max-width:56ch}
+main{padding:40px 0 0}
+.item{
+  display:block;text-decoration:none;color:inherit;background:var(--surface);
+  border:1px solid var(--rule);padding:26px 26px 24px;margin-bottom:14px;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.item:hover,.item:focus-visible{border-color:var(--accent);transform:translateY(-1px)}
+.item:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.item .k{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:11px;
+}
+.item h2{
+  font-family:"Archivo",sans-serif;font-size:22px;font-weight:700;margin:0 0 9px;
+  letter-spacing:-.014em;line-height:1.2;
+}
+.item p{margin:0 0 14px;color:var(--ink-2);font-size:15.5px}
+.item .meta{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3);
+  letter-spacing:.05em;display:flex;flex-wrap:wrap;gap:6px 16px;
+}
+footer{
+  margin-top:44px;padding:26px 0 70px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3);letter-spacing:.05em;
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Gabriel Vaz · Arquivo pessoal</p>
+    <h1>my-drive</h1>
+    <p>Documentos, relatórios e material de trabalho publicados como páginas estáticas.</p>
+  </header>
+
+  <main>
+    <a class="item" href="jornada-games/">
+      <div class="k">Auditoria · Produto e usabilidade</div>
+      <h2>Jornada Games</h2>
+      <p>Investigação de campo no marketplace de card games Jornada Games, em beta, executando tarefas reais de compra pela perspectiva de quem joga, coleciona e compra TCG no Brasil.</p>
+      <div class="meta"><span>30 de agosto de 2026</span><span>18 problemas</span><span>44 evidências</span></div>
+    </a>
+  </main>
+
+  <footer>Atualizado em 31 de agosto de 2026</footer>
+</div>
+</body>
+</html>

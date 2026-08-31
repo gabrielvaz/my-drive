@@ -1,0 +1,1571 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditoria de Produto — Jornada Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+
+<style>
+:root{
+  --paper:#EFF2F4;
+  --surface:#FFFFFF;
+  --surface-2:#E7EBEF;
+  --ink:#131E2B;
+  --ink-2:#5C6B7A;
+  --ink-3:#8593A0;
+  --rule:#D3DAE1;
+  --rule-soft:#E2E7EC;
+  --accent:#2C5871;
+  --sev-p0:#9E2B20;
+  --sev-p1:#A5641A;
+  --sev-p2:#2C5871;
+  --sev-p3:#6B7280;
+  --good:#2F6B4F;
+  --good-bg:#E4EFE9;
+  --warn-bg:#F6EBDD;
+  --crit-bg:#F5E3E1;
+  --shadow:0 1px 2px rgba(19,30,43,.06), 0 8px 24px -12px rgba(19,30,43,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E151D;
+    --surface:#151E28;
+    --surface-2:#1C2733;
+    --ink:#E6ECF1;
+    --ink-2:#A0AEBB;
+    --ink-3:#71818F;
+    --rule:#2A3743;
+    --rule-soft:#212C38;
+    --accent:#7FB2CE;
+    --sev-p0:#E4796C;
+    --sev-p1:#DFA463;
+    --sev-p2:#7FB2CE;
+    --sev-p3:#94A3B0;
+    --good:#78C3A0;
+    --good-bg:#172A22;
+    --warn-bg:#2B2318;
+    --crit-bg:#2B1B19;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E151D;
+  --surface:#151E28;
+  --surface-2:#1C2733;
+  --ink:#E6ECF1;
+  --ink-2:#A0AEBB;
+  --ink-3:#71818F;
+  --rule:#2A3743;
+  --rule-soft:#212C38;
+  --accent:#7FB2CE;
+  --sev-p0:#E4796C;
+  --sev-p1:#DFA463;
+  --sev-p2:#7FB2CE;
+  --sev-p3:#94A3B0;
+  --good:#78C3A0;
+  --good-bg:#172A22;
+  --warn-bg:#2B2318;
+  --crit-bg:#2B1B19;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.sans{font-family:"Archivo","Helvetica Neue",Arial,sans-serif}
+.mono,code,kbd{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.rule{border:0;border-top:1px solid var(--rule);margin:0}
+
+/* ---------- capa ---------- */
+.cover{padding:72px 0 40px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-2);margin:0 0 22px;
+}
+.cover h1{
+  font-size:clamp(40px,7vw,78px);line-height:.98;letter-spacing:-.028em;
+  font-weight:800;margin:0 0 22px;text-wrap:balance;max-width:21ch;
+}
+.cover h1 .brand{
+  display:block;font-size:.42em;line-height:1.05;letter-spacing:-.012em;
+  font-weight:700;color:var(--accent);margin-bottom:.34em;text-wrap:nowrap;
+}
+.dateline{
+  display:inline-block;margin:0 0 30px;padding-top:13px;
+  border-top:2px solid var(--ink);
+  font-family:"IBM Plex Mono",monospace;font-size:clamp(14px,1.5vw,16px);
+  font-weight:500;letter-spacing:.07em;color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+.dateline .sep{color:var(--ink-3);margin:0 10px}
+.dateline .ctx{color:var(--ink-2);letter-spacing:.05em}
+.cover .lede{
+  font-size:clamp(18px,2.1vw,21px);color:var(--ink-2);max-width:62ch;margin:0 0 34px;
+}
+.meta-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:8px;
+}
+.meta-grid > div{background:var(--paper);padding:14px 16px}
+.meta-grid dt{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 5px;
+}
+.meta-grid dd{margin:0;font-family:"Archivo",sans-serif;font-size:14.5px;font-weight:500;line-height:1.4}
+
+/* ---------- métricas ---------- */
+.metrics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.metric{background:var(--paper);padding:26px 20px 24px}
+.metric .n{
+  font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(30px,4vw,42px);
+  line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-bottom:9px;
+}
+.metric .n.crit{color:var(--sev-p0)}
+.metric .n.warn{color:var(--sev-p1)}
+.metric .lbl{font-size:14px;color:var(--ink-2);line-height:1.42}
+
+/* ---------- seções ---------- */
+section{padding:64px 0}
+.sec-head{margin-bottom:40px;max-width:70ch}
+.sec-num{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);display:block;margin-bottom:12px;
+}
+.sec-head h2{
+  font-size:clamp(28px,4vw,40px);line-height:1.06;letter-spacing:-.022em;
+  font-weight:700;margin:0 0 14px;text-wrap:balance;
+}
+.sec-head p{color:var(--ink-2);margin:0;font-size:17.5px}
+
+.part-divider{
+  background:var(--ink);color:var(--paper);padding:44px 0;margin:0;
+}
+:root[data-theme="dark"] .part-divider,
+:root:not([data-theme="light"]) .part-divider{background:var(--surface-2);color:var(--ink)}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]) .part-divider{background:var(--ink);color:var(--paper)}
+}
+.part-divider .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 22px}
+.part-divider .k{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;opacity:.62;
+}
+.part-divider h2{font-size:clamp(24px,3.4vw,34px);margin:0;letter-spacing:-.02em;font-weight:700}
+.part-divider .share{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:12.5px;opacity:.62}
+
+/* ---------- problema ---------- */
+.issue{
+  display:grid;grid-template-columns:210px minmax(0,1fr);gap:0 44px;
+  padding:44px 0;border-top:1px solid var(--rule);
+}
+.issue:first-of-type{border-top:2px solid var(--ink)}
+.issue > *{min-width:0}
+.rail{position:sticky;top:24px;align-self:start}
+.rail .id{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;
+  color:var(--ink-3);margin-bottom:14px;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;font-family:"Archivo",sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:5px 11px;border-radius:2px;margin-bottom:18px;
+}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.p0{color:var(--sev-p0);background:var(--crit-bg)}
+.chip.p1{color:var(--sev-p1);background:var(--warn-bg)}
+.chip.p2{color:var(--sev-p2);background:var(--surface-2)}
+.chip.p3{color:var(--sev-p3);background:var(--surface-2)}
+.chip.ok{color:var(--good);background:var(--good-bg)}
+.rail dl{margin:0;display:flex;flex-direction:column;gap:13px}
+.rail dt{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:3px;
+}
+.rail dd{margin:0;font-family:"Archivo",sans-serif;font-size:13.5px;line-height:1.42;color:var(--ink)}
+
+.body h3{
+  font-size:clamp(23px,2.9vw,30px);line-height:1.14;letter-spacing:-.019em;
+  font-weight:700;margin:0 0 20px;text-wrap:balance;
+}
+.body h4{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--accent);font-weight:600;
+  margin:32px 0 10px;
+}
+.body p{margin:0 0 15px;max-width:68ch}
+.body ul{margin:0 0 15px;padding-left:20px;max-width:68ch}
+.body li{margin-bottom:7px}
+.body strong{font-weight:600}
+.body a{color:var(--accent);text-underline-offset:2px}
+
+.quote{
+  border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:0 0 16px;
+  font-style:italic;color:var(--ink-2);max-width:66ch;
+}
+.quote .src{
+  display:block;font-style:normal;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:8px;
+}
+
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:.94em}
+
+/* ---------- evidência ---------- */
+figure{margin:22px 0 26px;background:var(--surface);border:1px solid var(--rule);box-shadow:var(--shadow)}
+figure img{display:block;width:100%;height:auto;border-bottom:1px solid var(--rule-soft)}
+figcaption{
+  padding:12px 15px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  line-height:1.55;color:var(--ink-2);
+}
+figcaption b{color:var(--ink);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px}
+figcaption .fn{display:block;color:var(--ink-3);margin-top:5px;word-break:break-all;font-size:10.5px}
+
+/* ---------- tabela ---------- */
+.tbl-wrap{overflow-x:auto;margin:20px 0 24px;border:1px solid var(--rule);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:"Archivo",sans-serif;font-size:14px;min-width:520px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--rule-soft)}
+th{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-2);font-weight:600;background:var(--surface-2);
+  border-bottom:1px solid var(--rule);
+}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0}
+tr.total td{font-weight:700;background:var(--surface-2)}
+
+/* ---------- caixas ---------- */
+.box{
+  background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+  padding:20px 22px;margin:22px 0;
+}
+.box.hyp{border-left-color:var(--sev-p1)}
+.box.good{border-left-color:var(--good)}
+.box h4{margin-top:0}
+.box p:last-child,.box ul:last-child{margin-bottom:0}
+
+/* ---------- prioridade ---------- */
+.prio{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.prio-row > *{min-width:0}
+.opps > *{min-width:0}
+.metrics > *{min-width:0}
+.meta-grid > *{min-width:0}
+.prio-row{
+  display:grid;grid-template-columns:64px 1fr 96px;gap:18px;align-items:center;
+  background:var(--paper);padding:16px 18px;
+}
+.prio-row .rank{
+  font-family:"Archivo",sans-serif;font-weight:800;font-size:26px;
+  font-variant-numeric:tabular-nums;color:var(--ink-3);letter-spacing:-.03em;
+}
+.prio-row .ttl{font-family:"Archivo",sans-serif;font-weight:600;font-size:15.5px;line-height:1.34}
+.prio-row .ttl span{display:block;font-weight:400;font-size:13px;color:var(--ink-2);margin-top:3px;font-family:"Source Serif 4",serif}
+.prio-row .pp{justify-self:end}
+
+/* ---------- oportunidades ---------- */
+.opps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.opp{background:var(--paper);padding:24px 22px}
+.opp .k{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px;
+}
+.opp h3{font-family:"Archivo",sans-serif;font-size:19px;font-weight:700;margin:0 0 10px;line-height:1.22;letter-spacing:-.012em}
+.opp p{margin:0 0 12px;font-size:15px;color:var(--ink-2)}
+.opp .link{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ---------- medidor ---------- */
+.meter{display:flex;align-items:center;gap:12px;margin:18px 0 6px;flex-wrap:wrap}
+.meter .track{display:flex;gap:2.5px}
+.meter i{width:5px;height:17px;background:var(--rule);border-radius:1px;display:block}
+.meter i.on{background:var(--sev-p0)}
+.meter .val{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--sev-p0);font-variant-numeric:tabular-nums}
+.meter .cap{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-2)}
+
+footer{border-top:2px solid var(--ink);padding:44px 0 72px;color:var(--ink-2);font-size:14.5px}
+footer p{max-width:70ch;margin:0 0 12px}
+
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+@media (max-width:860px){
+  body{font-size:16.5px}
+  .issue{grid-template-columns:1fr;gap:0}
+  .rail{position:static;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--rule-soft)}
+  .rail dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+  .prio-row{grid-template-columns:44px 1fr;gap:12px}
+  .prio-row .pp{grid-column:2;justify-self:start;margin-top:4px}
+  section{padding:48px 0}
+  .cover{padding:52px 0 32px}
+}
+</style>
+
+<div class="wrap">
+  <header class="cover">
+    <p class="eyebrow">Marketplace de card games · Programa beta</p>
+    <h1><span class="brand">Jornada Games</span>Auditoria de produto e usabilidade</h1>
+    <p class="dateline"><time datetime="2026-08-30">30 de agosto de 2026</time><span class="sep">·</span><span class="ctx">Investigação conduzida em sessão única</span></p>
+    <p class="lede">Investigação de campo executando tarefas reais de compra — procurar cartas, montar um deck, comparar vendedores, minimizar frete, chegar ao checkout — pela perspectiva de quem joga, coleciona e compra TCG no Brasil.</p>
+
+    <dl class="meta-grid">
+      <div><dt>Produto</dt><dd>jornadagames.com</dd></div>
+      <div><dt>Método</dt><dd>Navegação com tarefas, medição por página</dd></div>
+      <div><dt>Perspectiva</dt><dd>Comprador ~75% · Vendedor ~25%</dd></div>
+      <div><dt>Origem simulada</dt><dd>Salvador / BA</dd></div>
+      <div><dt>Sessões</dt><dd>Anônima e autenticada</dd></div>
+      <div><dt>Evidências</dt><dd>44 capturas de tela</dd></div>
+    </dl>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="metrics">
+    <div class="metric"><div class="n crit">~96%</div><div class="lbl">do catálogo não tem nenhuma oferta de venda — e o estado padrão da busca mostra tudo</div></div>
+    <div class="metric"><div class="n crit">R$ 52,35</div><div class="lbl">de frete para <span class="num">R$ 0,45</span> em cartas. O frete foi 98,6% do que eu pagaria</div></div>
+    <div class="metric"><div class="n crit">1 de 10</div><div class="lbl">cartas de uma decklist competitiva de Lorcana tinha alguém vendendo</div></div>
+    <div class="metric"><div class="n warn">23</div><div class="lbl">itens disponíveis na Bahia inteira, somando os quatro jogos do marketplace</div></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">Resumo executivo</span>
+      <h2>O problema não é a interface. É que quase não há o que comprar — e o frete come o resto.</h2>
+    </div>
+
+    <div class="body" style="max-width:none">
+      <p style="font-size:19px;max-width:68ch">Entrei no Jornada Games esperando encontrar problemas de usabilidade. Encontrei alguns, e alguns são graves. Mas depois de executar dezenas de tarefas reais, a conclusão honesta é outra: <strong>o Jornada Games já construiu boa parte das peças difíceis de um marketplace de TCG</strong> — carrinho agrupado por vendedor, consolidação de frete que funciona de verdade, filtro de localização com granularidade de cidade, calculadora de frete por CEP, um livro de ofertas que nenhum concorrente brasileiro tem.</p>
+
+      <p style="max-width:68ch">O que quebra a experiência hoje são três coisas encadeadas, e elas se explicam uma à outra:</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th style="width:34px">#</th><th>O que o comprador vive</th><th>Causa imediata</th></tr></thead>
+          <tbody>
+            <tr><td class="n">1</td><td>Procura uma carta e encontra páginas de becos sem saída</td><td>~96% do catálogo sem oferta, exibido por padrão junto com o que está à venda</td></tr>
+            <tr><td class="n">2</td><td>Acha a carta, e o frete custa 50× o preço dela</td><td>Oferta concentrada no Sudeste; frete só aparece no fim; sem retirada local</td></tr>
+            <tr><td class="n">3</td><td>Não consegue comprar um deck</td><td>Falta de oferta — não falta de importador de listas</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="max-width:68ch">E a causa de tudo isso está do outro lado do marketplace. Para anunciar <em>uma</em> carta, o vendedor precisa buscá-la no catálogo, <strong>fotografar o exemplar dele</strong>, definir condição e preço — e esperar <strong>revisão manual da equipe</strong>. Não existe importação de inventário em lugar nenhum do produto ou da documentação. Uma loja com 2.000 cartas no MyPCards não migra para cá: o custo é de dezenas de horas de trabalho manual, mais uma fila de moderação.</p>
+
+      <div class="box">
+        <h4>A tese deste relatório</h4>
+        <p>O catálogo vazio que o comprador enfrenta <strong>é sintoma do custo de anunciar</strong>. Melhorar o ranqueamento da busca alivia o sintoma e deve ser feito — é barato e o ganho é imediato. Mas só reduzir o custo de anunciar cura a causa. E existe uma terceira via, específica deste produto: o Jornada já tem um <strong>livro de ofertas</strong>. Um catálogo sem oferta pode virar um catálogo cheio de <em>demanda</em> — que é exatamente o que a home promete ao vendedor: <em>"Tem cartas paradas? Existe alguém procurando por elas."</em></p>
+      </div>
+
+      <div class="meter">
+        <span class="cap">Saúde da jornada de compra hoje</span>
+        <span class="track">
+          <i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+        <span class="val">baixa liquidez</span>
+      </div>
+      <p style="font-size:14px;color:var(--ink-2);max-width:66ch;margin-top:4px">Emprestei o medidor de liquidez de vocês. Ele aparece em praticamente toda carta do site marcado <span class="num">0/100</span> — inclusive nos destaques da home.</p>
+    </div>
+  </section>
+</div>
+
+<hr class="rule">
+
+<div class="wrap">
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">Método e limites</span>
+      <h2>Como eu investiguei, e o que eu não consegui verificar</h2>
+    </div>
+    <div class="body" style="max-width:none">
+      <p style="max-width:68ch">Naveguei com um navegador real, em sessão anônima e depois autenticada, executando tarefas de compra de ponta a ponta. As contagens de catálogo vêm de multiplicar o número de páginas de resultado por 24 itens/página — a última página pode ser parcial, então os totais absolutos são <strong>limites superiores</strong>; as proporções entre catálogo e oferta se mantêm. Todo número citado foi medido na sessão, não estimado.</p>
+      <ul style="max-width:68ch">
+        <li><strong>Não completei nenhuma compra.</strong> Cheguei até a tela de pagamento e parei.</li>
+        <li><strong>Não completei o cadastro de vendedor.</strong> Ele exige CPF, RG, nome da mãe e renda mensal, com verificação de identidade por parceiro. Enviar esses dados para testar uma tela não se justifica. A análise do lado vendedor se apoia no que é observável antes do KYC, na Central de Ajuda e na página de Taxas.</li>
+        <li><strong>Não avaliei</strong> pós-venda, disputas, rastreio, saque da carteira nem o painel do vendedor aprovado.</li>
+        <li>O marketplace está em beta com poucas semanas de vida — os vendedores que encontrei entraram em <span class="num">agosto de 2026</span>. Vários números baixos aqui refletem idade, não defeito. Onde isso muda a leitura, eu digo.</li>
+      </ul>
+      <p style="max-width:68ch">Corrigi três conclusões minhas durante a investigação: o filtro de localização <em>existe</em>, a paginação <em>funciona</em>, e os botões de compra <em>não</em> falham silenciosamente. Deixo o registro porque a diferença entre "não existe" e "existe no lugar errado" muda completamente a recomendação.</p>
+    </div>
+  </section>
+</div>
+
+<hr class="rule">
+
+<div class="wrap">
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">Antes das críticas</span>
+      <h2>O que já está bem construído</h2>
+      <p>Sinalizo isto primeiro porque várias dessas peças são melhores que as dos concorrentes, e porque a recomendação central do relatório é <em>expor</em> o que vocês já construíram, não construir de novo.</p>
+    </div>
+    <div class="body" style="max-width:none">
+      <div class="opps">
+        <div class="opp">
+          <div class="k">Carrinho</div>
+          <h3>Agrupamento e consolidação por vendedor</h3>
+          <p>O carrinho separa por vendedor, mostra subtotal de cada um, e cada grupo tem um checkbox <em>"Incluir neste pedido"</em> que permite dividir a compra. Medi a promessa de consolidação: adicionar 2 cartas do mesmo vendedor custou <span class="num">R$ 0,30</span> e <span class="num">R$ 0,00</span> de frete extra. Funciona.</p>
+        </div>
+        <div class="opp">
+          <div class="k">Localização</div>
+          <h3>Filtro de vendedor por estado e cidade</h3>
+          <p>Existe faceta <em>"Localização do vendedor"</em> nos quatro jogos, com 17 estados e granularidade de cidade (<span class="num">Brasília 191</span>, <span class="num">Bariri (SP) 35</span>…). Nenhum concorrente grande do mercado brasileiro entrega isso hoje.</p>
+        </div>
+        <div class="opp">
+          <div class="k">Frete</div>
+          <h3>Calculadora por CEP na página da loja</h3>
+          <p>A loja mostra <em>"Envia de Rio de Janeiro/RJ"</em> e calcula PAC e SEDEX a partir de um CEP — <strong>funcionando deslogado</strong>. É a peça certa; está no lugar errado.</p>
+        </div>
+        <div class="opp">
+          <div class="k">Modelo</div>
+          <h3>Livro de ofertas (Booking)</h3>
+          <p>Comprador e vendedor podem registrar ordens e o negócio fecha sozinho. É um modelo de bolsa aplicado a cartas — genuinamente diferente de MyPCards e das Ligas, e é o ativo estratégico mais subaproveitado do produto.</p>
+        </div>
+        <div class="opp">
+          <div class="k">Conteúdo</div>
+          <h3>Guia de Condição, Proteção e Taxas</h3>
+          <p>As páginas institucionais são claras e honestas. O Guia de Condição enfrenta de frente a ambiguidade de "Near Mint" no Brasil. A tabela de taxas é completa e sem letra miúda.</p>
+        </div>
+        <div class="opp">
+          <div class="k">Filtros</div>
+          <h3>Facetas conscientes de cada TCG</h3>
+          <p>Lorcana filtra por <em>Tinta</em>, Pokémon por <em>Energia</em>. Multi-seleção funciona, o estado vai para a URL (<span class="num">set=10,11</span>), e a posição de rolagem é preservada ao filtrar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="part-divider">
+  <div class="wrap">
+    <span class="k">Parte 1</span>
+    <h2>Experiência do comprador</h2>
+    <span class="share">14 problemas</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- B1 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B01</div>
+      <div class="chip p0">P0 · Crítica</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Busca e navegação por coleção</dd></div>
+        <div><dt>Frequência</dt><dd>Toda busca, todo usuário</dd></div>
+        <div><dt>Impacto</dt><dd>Percepção falsa de catálogo; abandono</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>O padrão da busca mostra um catálogo que quase não está à venda</h3>
+
+      <h4>Tarefa do usuário</h4>
+      <p>"Quero ver quais cartas de Elsa dá para comprar." E depois: "quero ver o que tem do set Whispers in the Well."</p>
+
+      <h4>O que aconteceu</h4>
+      <p>Busquei <span class="num">elsa</span>. Vieram 36 produtos em 2 páginas. <strong>Três</strong> tinham alguém vendendo. Os dois primeiros compráveis estavam nas posições <span class="num">17</span> e <span class="num">24</span> da primeira página; o terceiro só na página 2. Tudo o mais dizia <em>"Sem ofertas"</em>.</p>
+      <p>Busquei <span class="num">pikachu</span> — a carta mais buscada do mundo. Vieram <span class="num">29 páginas</span> de resultados. Na primeira página, <strong>zero</strong> compráveis. Com o filtro de disponibilidade ligado, sobram 3 páginas: cerca de <span class="num">10%</span> do que a busca me mostrava por padrão.</p>
+      <p>Busquei <span class="num">OP02-013</span> — o exemplo que <em>o próprio site</em> sugere no placeholder da home. Seis resultados, todos sem oferta.</p>
+
+      <figure>
+        <img src="screenshots/web/04-busca-pikachu-24-resultados-zero-ofertas.jpg" alt="Busca por pikachu mostrando 24 cartas japonesas antigas, todas marcadas Sem ofertas">
+        <figcaption><b>Evidência 01 · /search?q=pikachu</b><br>Os 24 resultados da primeira página, todos <em>"Sem ofertas"</em>. Repare na barra lateral: ela anuncia <span class="num">Comum 193</span>, <span class="num">Ultra Rara 19</span>, <span class="num">Near Mint 34</span> — o usuário lê isso como abundância. E note os códigos <span class="num">TP-609120</span> com raridade <span class="num">None</span>.
+        <span class="fn">screenshots/04-busca-pikachu-24-resultados-zero-ofertas.png</span></figcaption>
+      </figure>
+
+      <p>Medi o marketplace inteiro. A proporção não é um acidente de uma busca:</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Jogo</th><th class="n">Catálogo (~)</th><th class="n">Com oferta (~)</th><th class="n">% com oferta</th></tr></thead>
+          <tbody>
+            <tr><td>Pokémon</td><td class="n">52.000</td><td class="n">1.490</td><td class="n">2,9%</td></tr>
+            <tr><td>Disney Lorcana</td><td class="n">3.190</td><td class="n">460</td><td class="n">14,3%</td></tr>
+            <tr><td>One Piece TCG</td><td class="n">7.080</td><td class="n">745</td><td class="n">10,5%</td></tr>
+            <tr><td>Riftbound</td><td class="n">1.490</td><td class="n">≤ 24</td><td class="n">1,6%</td></tr>
+            <tr class="total"><td>Total</td><td class="n">~63.700</td><td class="n">~2.720</td><td class="n">~4,3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Por coleção o efeito é ainda mais desigual, e isso importa para a recomendação:</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Set de Lorcana</th><th class="n">Cartas</th><th class="n">Disponíveis</th><th class="n">Compráveis na 1ª página</th></tr></thead>
+          <tbody>
+            <tr><td>13 · Attack of the Vine!</td><td class="n">245</td><td class="n">~216</td><td class="n">20 / 24</td></tr>
+            <tr><td>12 · Wilds Unknown</td><td class="n">242</td><td class="n">~168</td><td class="n">15 / 24</td></tr>
+            <tr><td>11 · Winterspell</td><td class="n">242</td><td class="n">8</td><td class="n">2 / 24</td></tr>
+            <tr><td>10 · Whispers in the Well</td><td class="n">242</td><td class="n">9</td><td class="n">1 / 24</td></tr>
+            <tr><td>9 · Fabled</td><td class="n">243</td><td class="n">~30</td><td class="n">7 / 24</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>No set mais recente o estado padrão funciona bem. Nos sets antigos — <strong>exatamente onde vai o colecionador que quer completar coleção</strong> — o usuário folheia 11 páginas de cartas mortas para encontrar 9 compráveis, a menos que descubra sozinho o checkbox <em>"Apenas disponíveis"</em>, que vem desmarcado.</p>
+
+      <figure>
+        <img src="screenshots/web/09-lorcana-set10-primeiros-resultados-sem-oferta.jpg" alt="Set Whispers in the Well com os primeiros resultados todos sem oferta">
+        <figcaption><b>Evidência 02 · Whispers in the Well, estado padrão</b><br>Primeira página do set: 23 de 24 cartas sem oferta. O checkbox <em>"Apenas disponíveis"</em> está na lateral, desmarcado, sem destaque nenhum. Ligá-lo reduz o set inteiro a <span class="num">9</span> cartas.
+        <span class="fn">screenshots/09-lorcana-set10-primeiros-resultados-sem-oferta.png</span></figcaption>
+      </figure>
+
+      <h4>Expectativa do usuário</h4>
+      <p>Em um marketplace, o comportamento aprendido é que a listagem mostra o que está à venda. Mercado Livre, OLX, MyPCards, Liga: em todos, resultado = produto comprável. O catálogo completo é uma <em>enciclopédia</em>, e enciclopédia é uma segunda função, não a primeira.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Cria percepção falsa de catálogo e depois a desmente.</strong> A barra lateral promete 193 Pikachus; a realidade entrega zero na primeira página. A decepção é pior do que se o site parecesse pequeno desde o início.</li>
+        <li><strong>Custo por tentativa alto.</strong> O usuário abre carta após carta antes de entender a regra. Cada clique é uma página inteira carregada para descobrir "ninguém vende".</li>
+        <li><strong>A ordenação padrão piora tudo.</strong> Ela não considera disponibilidade, e o único critério que resolve o problema — <em>Menor preço</em> — está escondido dentro de um dropdown.</li>
+      </ul>
+
+      <h4>Benchmark</h4>
+      <p>MyPCards e as Ligas nascem do estoque: se ninguém cadastrou, a carta não aparece na listagem de venda. Eles têm o problema oposto — é difícil pesquisar uma carta que ninguém vende, mesmo quando você só quer ver o preço histórico. O Jornada escolheu o caminho de catálogo-primeiro, que é <strong>estrategicamente melhor</strong> (é o que permite ter livro de ofertas, histórico de preço e demanda registrada). O erro não é ter catálogo completo; é usar catálogo completo como <em>estado padrão de uma tela de compra</em>.</p>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Inverter o padrão:</strong> "Apenas disponíveis" ligado por default, com um contador visível do tipo <em>"9 à venda · 233 sem oferta — mostrar todas"</em>. Barato, reversível, e o contador transforma a ausência em informação.</li>
+          <li><strong>Ranquear em vez de filtrar:</strong> manter tudo, mas jogar itens sem oferta para o fim e agrupá-los sob um separador. Preserva a função enciclopédia sem sacrificar a de compra.</li>
+          <li><strong>Separar as duas intenções:</strong> a listagem de um set vira "à venda"; o catálogo completo vira uma visão explícita de coleção ("marcar o que eu tenho"), que é o que o colecionador realmente quer daquela tela.</li>
+        </ul>
+        <p style="margin-top:12px">A opção 2 me parece a mais alinhada ao que vocês estão construindo, porque não esconde a demanda potencial — e a demanda potencial é matéria-prima do livro de ofertas.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- B2 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B02</div>
+      <div class="chip p0">P0 · Crítica</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Produto → carrinho → checkout</dd></div>
+        <div><dt>Frequência</dt><dd>Toda compra de singles baratos</dd></div>
+        <div><dt>Impacto</dt><dd>Abandono no último passo; custo real invisível</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>O frete destrói a compra, e o número só aparece quando já não dá para reagir</h3>
+
+      <h4>Tarefa do usuário</h4>
+      <p>Sou de Salvador. Quero cinco cartas baratas para completar um deck. Quero saber quanto vou pagar.</p>
+
+      <h4>O que aconteceu</h4>
+      <p>Montei o carrinho: 5 cartas, 2 vendedores, <span class="num">R$ 0,45</span> em cartas. O carrinho me mostrou <strong>"Itens (5) · 2 de 2 vendedores · R$ 0,45"</strong> e, onde deveria estar o custo, a frase <em>"Frete: calculado no checkout"</em>.</p>
+      <p>No checkout, o número apareceu:</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Vendedor</th><th class="n">Cartas</th><th class="n">PAC</th><th class="n">SEDEX</th></tr></thead>
+          <tbody>
+            <tr><td>Cadu 's Store <span style="color:var(--ink-2)">(RJ) — 1 carta</span></td><td class="n">R$ 0,05</td><td class="n">R$ 27,60</td><td class="n">R$ 62,32</td></tr>
+            <tr><td>danfox <span style="color:var(--ink-2)">(SP) — 4 cartas</span></td><td class="n">R$ 0,40</td><td class="n">R$ 24,75</td><td class="n">R$ 48,47</td></tr>
+            <tr class="total"><td>Total (PAC)</td><td class="n">R$ 0,45</td><td class="n">R$ 52,35</td><td class="n">R$ 52,80</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>O frete foi 98,6% do que eu pagaria.</strong> As cartas, 0,85%.</p>
+
+      <figure>
+        <img src="screenshots/web/37-checkout-resumo-total-5280-para-45-centavos.jpg" alt="Resumo do checkout mostrando Itens R$0,45, Frete R$52,35, Total R$52,80">
+        <figcaption><b>Evidência 03 · /checkout</b><br><span class="num">Itens R$ 0,45 · Frete R$ 52,35 · Total R$ 52,80</span>. Note também o bloco <em>"Entrega em — Usando o endereço do seu cadastro"</em>: o endereço em si não é exibido. No momento de decidir um frete de R$52, eu não consigo conferir para onde ele vai.
+        <span class="fn">screenshots/37-checkout-resumo-total-5280-para-45-centavos.png</span></figcaption>
+      </figure>
+
+      <p>Depois desmarquei <em>"Incluir neste pedido"</em> no vendedor que tinha <strong>uma única carta de cinco centavos</strong>:</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Cenário</th><th class="n">Itens</th><th class="n">Frete</th><th class="n">Total</th></tr></thead>
+          <tbody>
+            <tr><td>2 vendedores · 7 cartas</td><td class="n">R$ 0,75</td><td class="n">R$ 52,35</td><td class="n">R$ 53,10</td></tr>
+            <tr><td>1 vendedor · 6 cartas</td><td class="n">R$ 0,70</td><td class="n">R$ 24,75</td><td class="n">R$ 25,45</td></tr>
+            <tr class="total"><td>Diferença por 1 carta de R$ 0,05</td><td class="n">−R$ 0,05</td><td class="n">−R$ 27,60</td><td class="n">−52%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Uma carta de cinco centavos custava <span class="num">R$ 27,60</span> de frete. Remover ela cortava metade da conta. <strong>Em nenhum momento a interface me disse isso.</strong> Descobri porque fui e voltei do checkout duas vezes, medindo.</p>
+
+      <h4>Onde o número está — e onde ele não está</h4>
+      <p>Aqui preciso ser justo: o frete <em>existe</em> antes do checkout, e bem apresentado. Clicar em "Comprar agora" abre um modal com item, PAC, SEDEX, total e sugestões do mesmo vendedor. É uma tela boa.</p>
+
+      <figure>
+        <img src="screenshots/web/45-comprar-agora-painel-inline.jpg" alt="Modal Frete e total com PAC R$24,75, SEDEX R$48,47 e total R$24,85">
+        <figcaption><b>Evidência 04 · Modal "Comprar agora", logado</b><br>Uma carta de <span class="num">R$ 0,10</span> vira <span class="num">R$ 24,85</span> entregue. O modal faz o trabalho certo — mas só depois que eu já escolhi uma carta específica, e só uma carta por vez.
+        <span class="fn">screenshots/45-comprar-agora-painel-inline.png</span></figcaption>
+      </figure>
+
+      <p>O problema é o <em>momento</em>. O frete não aparece:</p>
+      <ul>
+        <li>nos cards da busca, onde eu comparo cartas;</li>
+        <li>na linha do anúncio, onde eu escolho entre vendedores;</li>
+        <li>no resumo do carrinho, onde eu decido se fecho a compra;</li>
+        <li>e, para quem não tem conta, <strong>em lugar nenhum</strong>.</li>
+      </ul>
+
+      <figure>
+        <img src="screenshots/web/46-comprar-agora-deslogado-modal.jpg" alt="Modal deslogado dizendo Entre na sua conta para calcular o frete até o seu CEP">
+        <figcaption><b>Evidência 05 · Mesmo modal, sem conta</b><br><em>"Entre na sua conta para calcular o frete até o seu CEP."</em> Não há campo de CEP, e não há botão de checkout — o caminho de compra termina aqui. Para descobrir que uma carta de R$0,10 sai por R$24,85, o visitante precisa de um cadastro de 3 etapas com endereço completo.
+        <span class="fn">screenshots/46-comprar-agora-deslogado-modal.png</span></figcaption>
+      </figure>
+
+      <p>O detalhe que torna isso desnecessário: <strong>a própria plataforma já calcula frete por CEP sem login</strong> — na página da loja do vendedor. O componente existe e funciona. Ele só não está onde a decisão acontece.</p>
+
+      <figure>
+        <img src="screenshots/web/51-calculadora-frete-da-loja.jpg" alt="Página da loja mostrando Envia de Rio de Janeiro/RJ e frete calculado para CEP de Salvador">
+        <figcaption><b>Evidência 06 · /store/cadustore, sessão anônima</b><br><em>"Envia de Rio de Janeiro/RJ"</em> e <em>"Frete para 41810-011 · PAC R$ 27,60 · SEDEX R$ 62,32"</em>. Calculado para um CEP de Salvador, sem conta. A peça certa, na página que o comprador visita por último.
+        <span class="fn">screenshots/51-calculadora-frete-da-loja.png</span></figcaption>
+      </figure>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>O usuário decide com o número errado.</strong> Ele ancora em "R$ 0,45" e descobre "R$ 52,80" no passo em que já investiu todo o esforço. Isso não é fricção: é a definição de abandono de carrinho.</li>
+        <li><strong>Destrói a categoria de singles baratos.</strong> Cartas de R$0,05 a R$5 são a maior parte de qualquer deck e de qualquer coleção. Elas são economicamente impossíveis aqui — a menos que o comprador junte dezenas do mesmo vendedor, o que a interface não ajuda a fazer.</li>
+        <li><strong>Sem retirada local.</strong> A página de Envios diz que <em>todas</em> as entregas são por Correios. No Brasil, boa parte do volume de singles baratos acontece em mãos, em loja ou em torneio. O produto não tem essa opção.</li>
+        <li><strong>O modelo de Booking pede o frete antes.</strong> Na compra por oferta, o comprador paga a carta, o sistema só então decide o vendedor, e aí cobra o frete por e-mail. A Central de Ajuda já antecipa o desfecho com a pergunta <em>"E se eu não pagar o frete no prazo?"</em>. A resposta é cancelamento automático — ou seja, o abandono está previsto no desenho.</li>
+      </ul>
+
+      <div class="box" style="border-left-color:var(--sev-p0)">
+        <h4>Contradição na documentação</h4>
+        <p class="quote">"Compra direta ('Comprar agora'): O frete aparece e é pago no próprio checkout, junto do item. <strong>Um pagamento só, nenhuma surpresa depois.</strong>"<span class="src">/envios</span></p>
+        <p class="quote">"Quem paga o frete? O comprador. <strong>Quando o negócio fecha, você recebe uma cobrança de frete com prazo para pagamento.</strong>"<span class="src">/ajuda · Central de Ajuda</span></p>
+        <p>As duas páginas descrevem o mecanismo mais sensível do produto de formas incompatíveis. Uma delas está desatualizada, e o comprador não tem como saber qual.</p>
+      </div>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Pedir o CEP cedo e guardar.</strong> Um campo de CEP no topo (anônimo, um cookie), e todo preço da busca passa a poder mostrar "entregue por ~R$X". É o padrão do e-commerce brasileiro e vocês já têm o cálculo pronto.</li>
+          <li><strong>Frete estimado no resumo do carrinho</strong>, não só no checkout — mesmo que como faixa. O resumo é onde a decisão de fechar acontece.</li>
+          <li><strong>Alertar o vendedor caro.</strong> Quando um grupo tem frete desproporcional ao subtotal, dizer: <em>"Cadu 's Store: R$ 0,05 em cartas, R$ 27,60 de frete. Remover economiza R$ 27,60."</em> Vocês já têm o checkbox que executa a ação; falta o aviso que provoca a decisão.</li>
+          <li><strong>Retirada local / entrega combinada</strong> como opção por vendedor, ao menos entre pessoas da mesma cidade. É o que resolve singles baratos de verdade.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B3 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B03</div>
+      <div class="chip p0">P0 · Crítica</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Comprar uma decklist</dd></div>
+        <div><dt>Frequência</dt><dd>Jogador competitivo, toda rotação</dd></div>
+        <div><dt>Impacto</dt><dd>Tarefa impossível; usuário vai ao concorrente</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>Comprar um deck é a tarefa mais importante do jogador — e hoje ela não tem como terminar</h3>
+
+      <h4>Tarefa do usuário</h4>
+      <p>Tenho uma decklist. Quero comprar as cartas que me faltam, gastando o mínimo entre cartas e fretes.</p>
+
+      <h4>O que aconteceu</h4>
+      <p>Peguei 10 cartas conhecidas de Lorcana e busquei uma a uma, como o produto exige hoje. Não há importação de lista, colagem de texto, nem qualquer atalho — procurei o termo em toda a Central de Ajuda, no blog e nas páginas institucionais: <strong>zero menções</strong> a importar, lista, CSV ou lote.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Carta buscada</th><th class="n">Resultados</th><th class="n">Com oferta</th></tr></thead>
+          <tbody>
+            <tr><td>Elsa - Spirit of Winter</td><td class="n">3</td><td class="n">0</td></tr>
+            <tr><td>Mickey Mouse - Brave Little Tailor</td><td class="n">6</td><td class="n">0</td></tr>
+            <tr><td>Be Prepared</td><td class="n">2</td><td class="n">0</td></tr>
+            <tr><td>Beast - Hardheaded</td><td class="n">1</td><td class="n">0</td></tr>
+            <tr><td>Maui - Hero to All</td><td class="n">2</td><td class="n">0</td></tr>
+            <tr><td>Sisu - Divine Water Dragon</td><td class="n">2</td><td class="n">0</td></tr>
+            <tr><td>Tinker Bell - Giant Fairy</td><td class="n">6</td><td class="n">0</td></tr>
+            <tr><td>Pete - Games Referee</td><td class="n">1</td><td class="n">0</td></tr>
+            <tr><td>Dragon Fire</td><td class="n">14</td><td class="n">1</td></tr>
+            <tr><td>The Queen - Wicked and Vain</td><td class="n">2</td><td class="n">0</td></tr>
+            <tr class="total"><td>10 buscas manuais</td><td class="n">39</td><td class="n">1</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Dez buscas manuais, uma carta comprável. E essa uma carregaria seu próprio frete de ~<span class="num">R$ 25</span>.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <p>Esse é o fluxo que define se um marketplace de TCG é usado ou não. O jogador competitivo não compra uma carta: ele compra 15, 40, 60 de uma vez, e a decisão dele é sobre <em>custo total entregue</em>, não sobre o preço de cada single. Hoje o Jornada não consegue nem responder à primeira pergunta desse fluxo — "quanto disso vocês têm?".</p>
+
+      <div class="box">
+        <h4>O diagnóstico honesto sobre importação de listas</h4>
+        <p>É tentador tratar isso como "falta um importador de decklist". Não é. <strong>Um importador construído hoje devolveria uma página de "Sem ofertas".</strong> A fricção de digitar 40 nomes é real, mas ela não é o gargalo: o gargalo é que 96% do catálogo não tem vendedor.</p>
+        <p>O que muda o jogo é inverter para quem o importador trabalha. O Jornada já tem <strong>livro de ofertas</strong>. Uma decklist colada poderia virar <strong>40 ordens de compra de uma vez</strong> — e aí a lista funciona mesmo com catálogo vazio, porque ela deixa de ser uma consulta de estoque e vira um <em>sinal de demanda</em>. Volto a isso nas oportunidades.</p>
+      </div>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Colar texto solto e interpretar.</strong> Aceitar "4 Pikachu / 3 Charizard" sem formato rígido, resolvendo ambiguidade por escolha visual quando houver mais de uma versão. MyPCards e as Ligas exigem formato exato — aceitar entrada bagunçada já é diferenciação.</li>
+          <li><strong>Link ou print de deckbuilder.</strong> Dreamborn, Limitless, sites de decklist — e captura de tela reconhecida por imagem. É onde a decklist realmente vive.</li>
+          <li><strong>Resultado em três colunas honestas:</strong> <em>disponível agora</em> / <em>sem oferta — quer registrar uma ordem de compra?</em> / <em>não identifiquei</em>. A coluna do meio é o produto.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B4 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B04</div>
+      <div class="chip p1">P1 · Alta</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Busca → produto → escolha de vendedor</dd></div>
+        <div><dt>Frequência</dt><dd>Toda escolha entre vendedores</dd></div>
+        <div><dt>Impacto</dt><dd>Recurso forte fica invisível; fretes desnecessários</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>A localização do vendedor existe, mas não no momento em que ela decide a compra</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>Comecei este relatório convencido de que não havia filtro de localização. Estava errado, e a correção é importante: existe faceta <strong>"Localização do vendedor"</strong> nos quatro jogos, com estado <em>e</em> cidade. É melhor do que MyPCards e Ligas entregam hoje.</p>
+
+      <figure>
+        <img src="screenshots/web/53-filtro-localizacao-do-vendedor-bahia-7-itens.jpg" alt="Filtro Localização do vendedor com estados e contagens">
+        <figcaption><b>Evidência 07 · Faceta "Localização do vendedor"</b><br>17 estados com contagem, e abaixo o detalhamento por cidade. Repare no bug de dados: há uma cidade chamada <span class="num">"257 (SP)"</span> — um endereço malformado exposto num filtro público.
+        <span class="fn">screenshots/53-filtro-localizacao-do-vendedor-bahia-7-itens.png</span></figcaption>
+      </figure>
+
+      <p>O problema é onde essa informação vive. Na página do produto — a tela em que eu efetivamente escolho de quem comprar — a linha do anúncio traz: <span class="num">Cadu 's Store · Vendas: 0 · Avaliação: — · Near Mint · EN · R$ 0,05 · Comprar</span>. <strong>Sem cidade. Sem estado. Sem prazo. Sem frete.</strong></p>
+
+      <figure>
+        <img src="screenshots/web/13-produto-com-oferta-book-de-ofertas.jpg" alt="Página de produto com book de ofertas e a linha do anúncio sem localização">
+        <figcaption><b>Evidência 08 · Página de produto</b><br>A linha do anúncio, no rodapé da página, é onde a escolha de vendedor acontece. Ela não carrega a única informação que muda o custo real: de onde a carta sai.
+        <span class="fn">screenshots/13-produto-com-oferta-book-de-ofertas.png</span></figcaption>
+      </figure>
+
+      <h4>E o cenário Salvador, medido</h4>
+      <p>Filtrei por estado para responder a pergunta do comprador baiano: "o que dá para comprar perto de mim?"</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Jogo</th><th class="n">Disponíveis na Bahia</th><th class="n">Disponíveis em SP</th></tr></thead>
+          <tbody>
+            <tr><td>Pokémon</td><td class="n">7</td><td class="n">~600</td></tr>
+            <tr><td>Disney Lorcana</td><td class="n">1</td><td class="n">~380</td></tr>
+            <tr><td>One Piece TCG</td><td class="n">15</td><td class="n">—</td></tr>
+            <tr><td>Riftbound</td><td class="n">0</td><td class="n">—</td></tr>
+            <tr class="total"><td>Total</td><td class="n">23</td><td class="n">~980 (2 jogos)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Para um jogador de Lorcana em Salvador, "comprar perto de mim" significa <strong>uma carta</strong>. A ferramenta está pronta; a geografia da oferta é que ainda não existe fora do Sudeste.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>O melhor recurso do produto é o mais escondido.</strong> Um filtro que só aparece se o usuário abrir a barra lateral e rolar não compete com um argumento de venda.</li>
+        <li><strong>O usuário não sabe que deveria procurar por isso.</strong> Ninguém filtra por estado num marketplace de cartas — é preciso ensinar que aqui isso importa.</li>
+        <li><strong>O vazio regional fica invisível.</strong> O comprador baiano não descobre que a Bahia tem 23 itens; ele descobre, carta a carta, que o frete é caro. São coisas diferentes, e a segunda gera raiva.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Levar "Envia de X" para o card da busca e para a linha do anúncio.</strong> É uma linha de texto, e muda a decisão.</li>
+          <li><strong>Ordenar por "melhor custo entregue"</strong> quando houver CEP, em vez de só por preço da carta. É a ordenação que o comprador realmente quer.</li>
+          <li><strong>Assumir a assimetria regional como produto:</strong> quando não há oferta local, dizer isso — <em>"Nenhum vendedor na BA tem esta carta. 12 vendedores no Sudeste, frete a partir de R$24."</em> — e oferecer a ordem de compra. Honestidade vira retenção.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B5 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B05</div>
+      <div class="chip p1">P1 · Alta</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Navegação por coleção</dd></div>
+        <div><dt>Frequência</dt><dd>Todo colecionador completando set</dd></div>
+        <div><dt>Impacto</dt><dd>Tarefa central do colecionador sem suporte</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>A ordenação "Numeração" não ordena por numeração</h3>
+
+      <h4>Tarefa do usuário</h4>
+      <p>Completar uma coleção. O colecionador trabalha com o set na ordem impressa nas cartas — é assim que ele confere o que falta, é assim que binder e checklist são organizados.</p>
+
+      <h4>O que aconteceu</h4>
+      <p>A ordenação padrão se chama <strong>"Numeração [0-9]"</strong>. Os primeiros resultados do set 10 saem assim:</p>
+      <p class="num" style="background:var(--surface);border:1px solid var(--rule);padding:14px 16px;font-size:14px;line-height:1.9;max-width:none">
+        Akela — Forest Runner (90/224)<br>
+        Aladdin — Barreling Through (216/224)<br>
+        Aladdin — Barreling Through (123/224)<br>
+        Anna — Making Snow Plans (139/224)<br>
+        Ares — God of War (104/224)
+      </p>
+      <p>90, 216, 123, 139, 104. Não é ordem numérica — é ordem alfabética por nome. Confirmei pelos parâmetros de URL: <span class="num">sort=number_asc</span> e <span class="num">sort=name_asc</span> devolvem exatamente o mesmo resultado. As duas opções do dropdown fazem a mesma coisa.</p>
+
+      <figure>
+        <img src="screenshots/web/11-opcoes-de-ordenacao.jpg" alt="Dropdown de ordenação aberto com Numeração 0-9 selecionado e resultados em ordem alfabética">
+        <figcaption><b>Evidência 09 · Dropdown de ordenação</b><br>Sete opções: Numeração [0-9], Numeração [9-0], Nome [A-Z], Nome [Z-A], Menor preço, Maior preço, Maior liquidez. As duas primeiras duplicam as duas seguintes. Não há "Relevância" nem "Disponibilidade".
+        <span class="fn">screenshots/11-opcoes-de-ordenacao.png</span></figcaption>
+      </figure>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Ordenar por número é a operação básica do colecionador.</strong> Sem ela, conferir um set de 224 cartas contra o binder é inviável.</li>
+        <li><strong>O rótulo mente.</strong> Pior que faltar: o usuário acredita que ordenou e confere na ordem errada, sem perceber.</li>
+        <li>De quebra, a ordenação por <em>Menor preço</em> — a única que traz disponíveis para o topo, e portanto a mais útil hoje — fica escondida atrás de um dropdown fechado.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <p>Fazer <span class="num">number_asc</span> ordenar pelo número da carta de verdade (numérico, não lexicográfico — <span class="num">9</span> antes de <span class="num">90</span>). E, dado que a listagem já é a tela do colecionador, avaliar uma visão de checklist do set: grade compacta na ordem numérica, com estado de "tenho / não tenho / à venda".</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- B6 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B06</div>
+      <div class="chip p1">P1 · Alta</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Busca por número da carta</dd></div>
+        <div><dt>Frequência</dt><dd>Busca mais precisa do colecionador</dd></div>
+        <div><dt>Impacto</dt><dd>A carta existe e não é encontrável</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>A numeração do site não bate com a numeração impressa na carta</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>Na página de <em>Aladdin — Prince Ali</em>, o título diz <span class="num">(92/225)</span> e a coleção é "Fabled". A arte da carta, na mesma tela, diz <span class="num">92/204 · EN · 9</span>. E o modal de compra chama a mesma carta de <span class="num">(9-92)</span>. Três notações para uma carta, em uma tela.</p>
+
+      <figure>
+        <img src="screenshots/web/48-numeracao-divergente-site-92-225-carta-92-204.jpg" alt="Página do Aladdin Prince Ali com título 92/225 e a arte da carta mostrando 92/204">
+        <figcaption><b>Evidência 10 · Divergência de numeração</b><br>Título: <span class="num">(92/225)</span>. Rodapé da arte: <span class="num">92/204 · EN · 9</span>. O mesmo acontece com <em>Big Nose — Lovesick Poet</em>: site <span class="num">(70/224)</span>, carta <span class="num">70/204</span>.
+        <span class="fn">screenshots/48-numeracao-divergente-site-92-225-carta-92-204.png</span></figcaption>
+      </figure>
+
+      <p>Isso não é cosmético. Testei a busca com o número que está impresso na carta:</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Busca</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr><td><span class="num">92/204</span> <span style="color:var(--ink-2)">(o que está na carta)</span></td><td>Tamatoa, Ray, Olivia Flaversham — <strong>não</strong> traz Aladdin</td></tr>
+            <tr><td><span class="num">92/225</span> <span style="color:var(--ink-2)">(o que o site usa)</span></td><td>Aladdin — Prince Ali</td></tr>
+            <tr><td><span class="num">70/204</span> <span style="color:var(--ink-2)">(o que está na carta)</span></td><td>Beast, Jasmine — <strong>não</strong> traz Big Nose</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>E o catálogo é inconsistente consigo mesmo: alguns sets de Lorcana usam <span class="num">/204</span>, outros <span class="num">/224</span>, outros <span class="num">/225</span>.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Quebra a busca mais confiável que existe.</strong> Com a carta na mão, o número impresso é o identificador inequívoco — é o que resolve as dezenas de versões de "Elsa — Snow Queen".</li>
+        <li><strong>Falha silenciosamente.</strong> A busca não diz "não encontrei": ela devolve <em>outras</em> cartas com aquele número. O usuário conclui que o Jornada não tem a carta.</li>
+        <li>Afeta também o vendedor, que precisa localizar a carta certa no catálogo para anunciar.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <p>Indexar ambos os denominadores (o do set base e o estendido) como sinônimos de busca, e exibir na página a numeração impressa junto da interna. Alternativa mais simples: tratar o numerador isoladamente — buscar <span class="num">92/</span> ou <span class="num">92</span> dentro de um set já resolve a maioria dos casos sem precisar arrumar o catálogo inteiro.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- B7 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B07</div>
+      <div class="chip p1">P1 · Alta</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Filtrar em telas menores que ~1024px</dd></div>
+        <div><dt>Frequência</dt><dd>Todo uso mobile e notebook pequeno</dd></div>
+        <div><dt>Impacto</dt><dd>Filtro vira armadilha; usuário perde os resultados</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>Abrir os filtros empurra os resultados 2.000px para baixo, e não há como fechar</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>Abaixo de ~1024px a barra lateral vira um botão <strong>"Filtros"</strong>. O botão fica logo acima da grade de resultados. Clicando nele, o painel <strong>expande para cima do botão</strong> — e empurra tudo o que eu estava vendo para fora da tela.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Viewport</th><th class="n">Altura do painel</th><th class="n">Altura da tela</th><th class="n">1º resultado em</th><th class="n">Botão "Filtros" em</th></tr></thead>
+          <tbody>
+            <tr><td>900 × 800 <span style="color:var(--ink-2)">(notebook)</span></td><td class="n">1.623 px</td><td class="n">800 px</td><td class="n">y = 2.026</td><td class="n">y = 1.954</td></tr>
+            <tr><td>390 × 844 <span style="color:var(--ink-2)">(mobile)</span></td><td class="n">1.618 px</td><td class="n">844 px</td><td class="n">y = 2.069</td><td class="n">y = 2.001</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>O painel ocupa <strong>duas telas inteiras</strong>. E o botão que eu acabei de clicar foi parar 1.600px abaixo de onde estava — junto com os resultados.</p>
+
+      <figure>
+        <img src="screenshots/web/19-900px-botao-filtros.jpg" alt="Listagem em 900px com o botão Filtros logo acima dos resultados">
+        <figcaption><b>Evidência 11a · 900px, painel fechado</b><br>Estado inicial: botão "Filtros" em <span class="num">y≈331</span>, resultados logo abaixo. Tudo à mão.
+        <span class="fn">screenshots/19-900px-botao-filtros.png</span></figcaption>
+      </figure>
+
+      <figure>
+        <img src="screenshots/web/20-900px-painel-filtros-aberto.jpg" alt="Painel de filtros aberto ocupando toda a tela, sem botão de fechar ou aplicar">
+        <figcaption><b>Evidência 11b · 900px, painel aberto</b><br>Um clique depois. A tela inteira é filtro. Não há <span class="num">✕</span>, não há "Aplicar", não há "Ver resultados", não há barra fixa. Os resultados e o próprio botão que fecha o painel estão 1.600px abaixo, fora de vista.
+        <span class="fn">screenshots/20-900px-painel-filtros-aberto.png</span></figcaption>
+      </figure>
+
+      <figure>
+        <img src="screenshots/web/23-mobile-390-filtros-abertos.jpg" alt="Mesmo problema em mobile 390px">
+        <figcaption><b>Evidência 11c · 390 × 844, painel aberto</b><br>Comportamento idêntico no celular. Só a faceta "Expansão" tem 22 entradas; abaixo dela ainda vêm Condição, Raridade, Idioma, Localização, Tinta e Artista.
+        <span class="fn">screenshots/23-mobile-390-filtros-abertos.png</span></figcaption>
+      </figure>
+
+      <h4>Expectativa do usuário</h4>
+      <p>Em mobile, filtro é <em>drawer</em> ou tela cheia com uma barra fixa: <span class="num">✕</span> de um lado, "Ver N resultados" do outro. É o padrão que Mercado Livre, Shopee, Amazon e as próprias Ligas usam. O usuário espera confirmar e voltar — não rolar de volta para desfazer.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>A ação de sair não tem affordance.</strong> O usuário fica olhando para um painel e a única saída visível é o botão "voltar" do navegador — que descarta os filtros.</li>
+        <li><strong>Sem feedback do resultado.</strong> Marcando uma raridade, o número de itens muda — mas os itens estão a duas telas de distância. Não dá para calibrar o filtro.</li>
+        <li><strong>Isso agrava o B01.</strong> "Apenas disponíveis" é praticamente obrigatório para usar o site, e no mobile ele mora dentro desse painel.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Drawer com barra fixa</strong>: <span class="num">✕</span> + "Ver 9 resultados", com o contador atualizando ao vivo. Resolve fechar, aplicar e feedback de uma vez.</li>
+          <li><strong>Se mantiver o acordeão inline</strong>, no mínimo tornar o cabeçalho do painel fixo enquanto ele estiver aberto, e recolher todas as facetas por padrão.</li>
+          <li><strong>Chips de filtro ativo acima da grade</strong>, sempre visíveis e removíveis individualmente — hoje só existe o "Limpar filtros", que é tudo ou nada.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B8 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B08</div>
+      <div class="chip p1">P1 · Alta</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Busca por nome de carta</dd></div>
+        <div><dt>Frequência</dt><dd>Alta em Pokémon</dd></div>
+        <div><dt>Impacto</dt><dd>Resultados poluídos; confusão produto × carta</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>Produtos selados aparecem como se fossem cartas — com arte e texto de carta</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>Os primeiros resultados de <span class="num">pikachu</span> e <span class="num">charizard</span> têm códigos <span class="num">TP-609120</span>, <span class="num">SN-24172</span> e raridade <span class="num">None</span>. Abri um: é um <strong>produto lacrado</strong> — "Rampardos the Attacker Constructed Half Deck", categoria "Outros Selados". Mas a página exibe a arte de <em>uma</em> carta Pikachu e o <strong>texto de regras dessa carta</strong>, incluindo o Poké-POWER.</p>
+
+      <figure>
+        <img src="screenshots/web/05-produto-sem-ofertas-dead-end.jpg" alt="Página de um produto lacrado exibida como se fosse uma carta Pikachu">
+        <figcaption><b>Evidência 12 · /product/221320/pikachu</b><br>Breadcrumb: <em>Pokémon › Outros Selados › Pikachu</em>. Etiqueta: "Produto lacrado". Mas a imagem é uma carta e a descrição é o texto de regras da carta. Botão desabilitado, histórico vazio, liquidez <span class="num">0/100</span>.
+        <span class="fn">screenshots/05-produto-sem-ofertas-dead-end.png</span></figcaption>
+      </figure>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Ocupa o topo da busca mais popular do site</strong> com itens que não são o que o usuário procura, empurrando cartas reais para baixo.</li>
+        <li><strong>Confunde as três entidades</strong> que um marketplace de TCG precisa manter distintas: produto, carta e anúncio. O iniciante — que já não sabe diferenciar set, código e versão — fica sem chão.</li>
+        <li><strong>Contamina o preço de referência.</strong> Um deck lacrado indexado como "Pikachu" entra no mesmo espaço de nome da carta Pikachu.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li>Separar selados de singles nos resultados por padrão — vocês já têm os carrosséis de categoria ("Booster Boxes", "Cases Lacradas") no topo da busca; falta a separação valer também para a grade.</li>
+          <li>Não herdar arte e texto de regras de uma carta para um produto lacrado. A imagem de um half deck deve ser a caixa.</li>
+          <li>Revisar a normalização de nome: um produto chamado "Rampardos the Attacker Constructed Half Deck" não deveria ser indexado como "Pikachu".</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B9 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B09</div>
+      <div class="chip p1">P1 · Alta</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Autocomplete do cabeçalho</dd></div>
+        <div><dt>Frequência</dt><dd>Primeiro contato com a busca</dd></div>
+        <div><dt>Impacto</dt><dd>Escolha às cegas; leva a becos sem saída</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>As sugestões da busca não permitem distinguir uma versão da outra</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>Digitei <span class="num">charizard</span>. Vieram oito sugestões, <strong>todas com o texto "Charizard"</strong>, diferenciadas apenas por um código e uma raridade.</p>
+
+      <figure>
+        <img src="screenshots/web/28-autocomplete-busca-header.jpg" alt="Autocomplete mostrando oito sugestões todas chamadas Charizard">
+        <figcaption><b>Evidência 13 · Autocomplete</b><br>Oito "Charizard". Sem nome de coleção, sem preço, sem disponibilidade. Duas sugestões estão sem imagem. Uma exibe <span class="num">"012/029 · None"</span> — o valor nulo vazando para a tela. Outra exibe <span class="num">"008/108 ·"</span>, com o separador órfão.
+        <span class="fn">screenshots/28-autocomplete-busca-header.png</span></figcaption>
+      </figure>
+
+      <p>Cliquei na primeira: caí num produto <strong>lacrado</strong> japonês (<span class="num">?v=SEALED-JP</span>). As abas "Produtos / Artigos / Decks" acima das sugestões não respondem a clique e não aparecem na árvore de acessibilidade — assim como as próprias sugestões, que só funcionam com mouse.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>A informação que diferencia está ausente e a que sobra não ajuda.</strong> Ninguém escolhe um Charizard por "TP-577031"; escolhe por coleção, arte e preço.</li>
+        <li><strong>O autocomplete é a porta de entrada</strong> e hoje ele entrega o usuário direto num beco sem saída, sem sinalizar disponibilidade.</li>
+        <li><strong>Barreira de acessibilidade</strong>: sugestões inalcançáveis por teclado.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <p>Cada sugestão carregando <strong>coleção + menor preço + "N à venda"</strong>, e sugestões sem oferta rebaixadas ou marcadas. Se as abas "Artigos" e "Decks" ainda não têm conteúdo, escondê-las até terem — uma aba morta custa confiança. E expor sugestões como <span class="num">role="option"</span> navegáveis por seta.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- B10 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B10</div>
+      <div class="chip p2">P2 · Média</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Navegação a partir do menu</dd></div>
+        <div><dt>Frequência</dt><dd>Todo usuário novo</dd></div>
+        <div><dt>Impacto</dt><dd>Expectativa quebrada; becos sem saída</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>"Coleções" não são coleções — e sets "Em breve" oferecem "Comprar agora"</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>No vocabulário de TCG, <em>coleção</em> significa expansão: "Whispers in the Well", "Surging Sparks". Cliquei em <strong>Coleções</strong> no menu esperando expansões. Recebi <strong>jogos</strong> — 11 deles, e <strong>7 marcados "EM BREVE"</strong> (Magic, Yu-Gi-Oh!, Digimon, Star Wars, Flesh and Blood, Final Fantasy, Dragon Ball).</p>
+
+      <figure>
+        <img src="screenshots/web/06-colecoes-sao-jogos-maioria-em-breve.jpg" alt="Página Coleções mostrando jogos, a maioria marcada EM BREVE">
+        <figcaption><b>Evidência 14 · /collections</b><br>A página se chama "Nossas categorias · Coleções" e lista jogos. A maioria dos cards está esmaecida com "EM BREVE". O carrossel ainda repete os mesmos jogos em várias linhas.
+        <span class="fn">screenshots/06-colecoes-sao-jogos-maioria-em-breve.png</span></figcaption>
+      </figure>
+
+      <p>Dentro de um jogo, os sets aparecem. Mas ali sets marcados "EM BREVE" trazem um botão azul <strong>"Comprar agora"</strong> perfeitamente ativo.</p>
+
+      <figure>
+        <img src="screenshots/web/07-sets-em-breve-com-botao-comprar-agora.jpg" alt="Sets marcados EM BREVE com botão Comprar agora ativo">
+        <figcaption><b>Evidência 15 · /games/one-piece-tcg</b><br>"85 sets disponíveis para negociação". Os dois primeiros estão "EM BREVE" — e ambos oferecem "Comprar agora".
+        <span class="fn">screenshots/07-sets-em-breve-com-botao-comprar-agora.png</span></figcaption>
+      </figure>
+
+      <figure>
+        <img src="screenshots/web/08-set-em-breve-resultado-vazio.jpg" alt="Resultado vazio dizendo Nenhum resultado encontrado, tente buscar por outro nome">
+        <figcaption><b>Evidência 16 · O destino do botão</b><br><em>"Nenhum resultado encontrado. Por favor, tente buscar por outro nome ou usando termos gerais."</em> Eu não busquei nada — cliquei num set. A mensagem é de busca textual e não faz sentido aqui, e o filtro que zerou o resultado só é visível na barra lateral.
+        <span class="fn">screenshots/08-set-em-breve-resultado-vazio.png</span></figcaption>
+      </figure>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Um CTA que promete compra e entrega vazio</strong> é a forma mais rápida de gastar confiança em um produto novo.</li>
+        <li><strong>A mensagem de estado vazio não corresponde à ação.</strong> Ela culpa o usuário por uma busca que ele não fez e não diz o que fazer.</li>
+        <li><strong>"85 sets disponíveis para negociação"</strong> não é verdade quando parte deles está "em breve".</li>
+        <li><strong>Sete de onze jogos indisponíveis</strong> na página de entrada da navegação transmite um catálogo menor do que o real. Em beta, entendo a intenção de mostrar ambição — mas o custo é o usuário achar que o site está vazio.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li>Renomear o item de menu para <strong>"Jogos"</strong> e usar "Coleções" para expansões, que é o que o público chama assim.</li>
+          <li>Em sets sem oferta, trocar o CTA: <em>"Ver as 0 cartas à venda"</em> é ruim; <em>"Avise-me quando houver"</em> ou <em>"Fazer uma ordem de compra"</em> aproveita o beco sem saída.</li>
+          <li>Estado vazio contextual: dizer qual filtro zerou o resultado e oferecer removê-lo com um clique.</li>
+          <li>Considerar agrupar os jogos "em breve" numa faixa discreta em vez de misturá-los aos ativos.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B11 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B11</div>
+      <div class="chip p2">P2 · Média</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Escolha de vendedor</dd></div>
+        <div><dt>Frequência</dt><dd>Toda compra</dd></div>
+        <div><dt>Impacto</dt><dd>Sinais de confiança vazios ou contraditórios</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>Os sinais de confiança estão todos zerados — e um deles se contradiz</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>Todo vendedor que encontrei traz o selo <strong>"Vendedor verificado"</strong> e, logo ao lado, <span class="num">Vendas: 0</span> e <span class="num">Avaliação: —</span>. Como comprador, "verificado" e "nunca vendeu nada" no mesmo bloco não somam confiança — eles se anulam, porque não sei o que "verificado" quer dizer.</p>
+
+      <figure>
+        <img src="screenshots/web/14-perfil-vendedor-envia-de-rj.jpg" alt="Perfil de vendedor com selo verificado, 0 vendas e números divergentes">
+        <figcaption><b>Evidência 17 · /store/cadustore</b><br>"Vendedor verificado · Membro desde agosto de 2026 · Envia de Rio de Janeiro/RJ". Estatísticas: <span class="num">Total de itens 211</span>, <span class="num">Itens únicos 137</span>, <span class="num">Vendas 0</span> — e a aba abaixo diz <span class="num">Anúncios 147</span>. Três números diferentes para o estoque, sem explicação da diferença.
+        <span class="fn">screenshots/14-perfil-vendedor-envia-de-rj.png</span></figcaption>
+      </figure>
+
+      <p>O mesmo vale para o indicador de liquidez: <strong>toda</strong> carta que abri exibe "Baixa liquidez <span class="num">0/100</span>" e "Sem vendas no período selecionado" — inclusive as cartas em destaque na home. Um indicador que nunca varia deixa de informar e vira ruído.</p>
+
+      <p>E o preço de referência tem um problema estrutural: um único vendedor listou centenas de cartas de Lorcana a <span class="num">R$ 0,10</span>. Ele define sozinho o "Menor Vendedor" de boa parte do set — o número que aparece como âncora de preço em cada página.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Em marketplace C2C, reputação é o produto.</strong> Sem histórico, o comprador precisa confiar na plataforma — e a plataforma escolheu mostrar métricas vazias em vez de explicar sua própria proteção.</li>
+        <li><strong>Números divergentes no mesmo perfil</strong> (211 / 137 / 147) fazem o usuário duvidar do resto dos dados.</li>
+        <li><strong>Baixa liquidez em tudo</strong> comunica "mercado morto" na tela em que vocês mais precisam comunicar o contrário.</li>
+      </ul>
+
+      <p style="color:var(--ink-2)"><em>Nota justa: isto é, em boa parte, idade. Um marketplace com semanas de vida não tem histórico. A crítica não é ter zeros — é exibi-los como se fossem medidas.</em></p>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Enquanto não há histórico, mostrar a proteção no lugar da reputação.</strong> Na linha do anúncio: "Pagamento em custódia · liberado 7 dias após você confirmar". Vocês têm um mecanismo forte descrito em /protecao e ele não aparece onde a desconfiança nasce.</li>
+          <li><strong>Explicar "verificado"</strong> num tooltip: identidade confirmada por parceiro. Hoje o selo é uma afirmação sem lastro visível.</li>
+          <li><strong>Esconder o medidor de liquidez</strong> quando não há dados, em vez de exibir 0/100. "Ainda sem histórico de vendas" informa; "0/100" desestimula.</li>
+          <li><strong>Reconciliar os três contadores</strong> ou rotulá-los para que a diferença faça sentido.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B12 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B12</div>
+      <div class="chip p2">P2 · Média</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Consolidação por vendedor</dd></div>
+        <div><dt>Frequência</dt><dd>Sempre que vale juntar frete</dd></div>
+        <div><dt>Impacto</dt><dd>Economia real fica difícil de executar</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>A consolidação funciona, mas descobrir o que mais aquele vendedor tem é trabalho manual</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>A promessa <em>"Mais cartas de danfox vão no mesmo pacote, sem frete extra"</em> é verdadeira — medi. Mas a lógica só funciona bem se eu conseguir responder: <strong>"quais das cartas que eu quero esse vendedor tem?"</strong></p>
+      <p>E aí o produto para. A loja do vendedor tem facetas de Card Game, Idioma, Condição, Graduadora e Nota — mas <strong>não tem campo de busca, nem filtro por expansão, nem por nome de carta</strong>. Para saber se o danfox tem as 6 cartas que me faltam entre seus 374 anúncios, eu folheio.</p>
+
+      <figure>
+        <img src="screenshots/web/50-loja-vendedor-sem-busca-sem-filtro-de-set.jpg" alt="Loja do vendedor com filtros de idioma e condição, sem busca nem filtro de expansão">
+        <figcaption><b>Evidência 18 · /store/danfox</b><br><span class="num">1.315</span> itens, <span class="num">353</span> únicos, <span class="num">374</span> anúncios. Os filtros disponíveis não incluem busca por nome nem expansão — justamente os dois que responderiam "você tem a carta X?".
+        <span class="fn">screenshots/50-loja-vendedor-sem-busca-sem-filtro-de-set.png</span></figcaption>
+      </figure>
+
+      <p>O carrinho tenta cobrir isso com o bloco <em>"Aproveite o frete deste vendedor"</em>, que sugere ~8 cartas. É uma boa ideia, mas as sugestões parecem não ter relação com o que eu procuro — e o bloco tem um bug: clicar no <span class="num">+</span> grava o item, mas <strong>a interface não atualiza</strong>. A lista, o contador do carrinho e o resumo continuam mostrando o estado anterior até eu recarregar a página.</p>
+
+      <figure>
+        <img src="screenshots/web/34-carrinho-multi-vendedor.jpg" alt="Carrinho agrupado por vendedor com blocos de cross-sell">
+        <figcaption><b>Evidência 19 · /cart</b><br>O carrinho em si é bem resolvido: agrupamento por vendedor, subtotal de cada um, checkbox "Incluir neste pedido" e cross-sell. O <span class="num">+</span> nos cards de sugestão é que não reflete o clique.
+        <span class="fn">screenshots/34-carrinho-multi-vendedor.png</span></figcaption>
+      </figure>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>A maior economia disponível hoje no produto é consolidar</strong> — e ela depende de um cruzamento que o usuário precisa fazer de cabeça.</li>
+        <li><strong>Um botão que não responde é lido como quebrado.</strong> O usuário clica de novo, ou desiste.</li>
+        <li>O bloco de sugestões desperdiça o melhor sinal que existe: o que já está no meu carrinho e a minha lista de desejos.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Busca e filtro por expansão dentro da loja.</strong> Barato e destrava a consolidação manual.</li>
+          <li><strong>"Este vendedor tem 4 das cartas da sua lista"</strong> — cruzar a loja com carrinho e favoritos, e mostrar isso na própria linha do anúncio.</li>
+          <li>Corrigir a atualização do carrinho ao adicionar via sugestão.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- B13 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B13</div>
+      <div class="chip p2">P2 · Média</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Checkout e listagens</dd></div>
+        <div><dt>Frequência</dt><dd>Toda compra / toda busca</dd></div>
+        <div><dt>Impacto</dt><dd>Fricção evitável em momentos decisivos</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>Detalhes que travam a decisão: endereço oculto, botão sem motivo, listagem sem contagem</h3>
+
+      <p>Agrupo aqui problemas menores que se somam nos momentos que mais importam.</p>
+
+      <h4>O endereço não é exibido no checkout</h4>
+      <p>O bloco diz apenas <em>"Entrega em — Usando o endereço do seu cadastro."</em> Estou prestes a pagar R$52 de frete e não consigo conferir para onde vai, a menos que abra "Gerenciar endereços". Para quem tem mais de um endereço, isso é o suficiente para desistir.</p>
+
+      <h4>O botão "Continuar" fica desabilitado sem dizer por quê</h4>
+      <p>Com tudo preenchido, o CTA do resumo continua cinza. O motivo é que falta escolher a forma de pagamento — que está muito abaixo da dobra, fora do campo de visão de quem olha o resumo. Nenhuma mensagem conecta as duas coisas.</p>
+
+      <figure>
+        <img src="screenshots/web/38-checkout-pagamento-saldo-insuficiente.jpg" alt="Seção de pagamento com saldo insuficiente e opções Pix, cartão, boleto">
+        <figcaption><b>Evidência 20 · /checkout, seção de pagamento</b><br>Aqui também aparece uma boa notícia mal comunicada: <em>"Saldo insuficiente… Pagar a diferença com PIX"</em>, e Pix marcado como RECOMENDADO. Ou seja, <strong>não é obrigatório carregar a carteira antes</strong> — ao contrário do que a Central de Ajuda diz ("Os pagamentos acontecem pela carteira Jornada"). A documentação está mais restritiva que o produto.
+        <span class="fn">screenshots/38-checkout-pagamento-saldo-insuficiente.png</span></figcaption>
+      </figure>
+
+      <h4>Nenhuma listagem de cartas informa quantos resultados existem</h4>
+      <p>A página de sets diz "85 sets · página 1 de 4". A listagem de cartas não diz nada: nem total, nem "página X de Y" — apenas botões numerados. O usuário não sabe se filtrou de 3.000 para 200 ou para 12.</p>
+
+      <h4>Faltam dois filtros que o comprador de TCG usa direto</h4>
+      <ul>
+        <li><strong>Faixa de preço.</strong> Não existe. Para quem procura "cartas baratas" — um dos perfis mais comuns — só resta ordenar e rolar.</li>
+        <li><strong>Acabamento (foil / normal).</strong> Existe na página do produto, não na listagem. Foil e normal têm preços muito diferentes.</li>
+      </ul>
+
+      <h4>Rótulo de faceta errado em One Piece</h4>
+      <p>A faceta de cor do One Piece se chama <strong>"Energia"</strong> — um conceito de Pokémon. Os valores são Vermelho, Azul, Verde, Roxo, Amarelo, Preto. Em One Piece isso é <em>Cor</em>. A mesma faceta em Lorcana se chama "Tinta" na página do jogo e "Cor" na busca global: três nomes para o mesmo conceito.</p>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <p>Todos são correções pontuais: exibir o endereço resumido no checkout; explicar o botão desabilitado (ou rolar até o que falta); mostrar contagem de resultados; adicionar faixa de preço e acabamento; e usar o vocabulário nativo de cada TCG nos rótulos de faceta.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- B14 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">B14</div>
+      <div class="chip p2">P2 · Média</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Descoberta via Google</dd></div>
+        <div><dt>Frequência</dt><dd>Todo tráfego de aquisição orgânica</dd></div>
+        <div><dt>Impacto</dt><dd>Long tail de demanda invisível</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>As páginas que respondem à intenção de compra estão marcadas para não serem indexadas</h3>
+
+      <p>O briefing pedia para tratar SEO como consequência da arquitetura de informação, não como auditoria técnica. É exatamente onde o problema está.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Tipo de página</th><th>robots</th><th>canonical</th><th>H1</th></tr></thead>
+          <tbody>
+            <tr><td>Home</td><td>index, follow</td><td>própria</td><td>—</td></tr>
+            <tr><td>Busca e <strong>todas as coleções</strong></td><td><strong>noindex</strong>, follow</td><td><strong>aponta para a home</strong></td><td>—</td></tr>
+            <tr><td>Produto (carta)</td><td>index, follow</td><td>própria</td><td>nome da carta</td></tr>
+            <tr><td>Loja do vendedor</td><td>index, follow</td><td>própria</td><td>nome da loja</td></tr>
+            <tr><td>Jogo (lista de sets)</td><td>index, follow</td><td>própria</td><td>"Sets de X"</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>As páginas de coleção vivem sob <span class="num">/search</span> e por isso herdaram <span class="num">noindex</span>. São elas que respondem às buscas de maior intenção comercial do mercado — "singles Whispers in the Well", "cartas Surging Sparks", "Lorcana set 10 comprar". Nenhuma expansão tem URL própria indexável.</p>
+      <p>O canonical dessas páginas aponta para <span class="num">https://jornadagames.com/</span> — a home. Isso instrui o Google a consolidar toda a navegação por coleção na página inicial.</p>
+      <p>E o <span class="num">sitemap.xml</span> tem <strong>27 URLs</strong>: home, busca, blog, ajuda, institucionais e quatro jogos. <strong>Nenhum produto, nenhuma loja, nenhum set</strong> — apesar de páginas de produto e loja serem indexáveis e já terem dados estruturados.</p>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>URL própria e indexável por expansão</strong> (<span class="num">/lorcana/whispers-in-the-well</span>), com canonical correto e H1. É a mesma listagem, com outra casa.</li>
+          <li><strong>Sitemap por segmentos</strong> para produtos e lojas — o long tail de "nome da carta + preço" é exatamente a busca de quem está prestes a comprar.</li>
+          <li><strong>Páginas de cidade</strong> — <em>"Cartas Pokémon à venda em Salvador"</em>, <em>"Vendedores de Lorcana em Curitiba"</em>. Vocês são os únicos com o dado de localização para gerá-las, elas resolvem um problema real de descoberta local, e nenhum concorrente disputa esses termos hoje. É o raro caso em que a página de SEO e a página que o usuário precisa são a mesma página.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<div class="part-divider">
+  <div class="wrap">
+    <span class="k">Parte 2</span>
+    <h2>Experiência do vendedor</h2>
+    <span class="share">4 problemas · a causa do que está na Parte 1</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- V1 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">V01</div>
+      <div class="chip p0">P0 · Crítica</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Criar anúncio</dd></div>
+        <div><dt>Frequência</dt><dd>Toda carta, todo vendedor</dd></div>
+        <div><dt>Impacto</dt><dd>Migração de lojistas inviável</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>Anunciar exige foto do exemplar e revisão manual — por carta</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>Não consegui ver a tela de anúncio (V02 explica por quê), então recorri à descrição oficial:</p>
+      <p class="quote">"Você busca a carta no catálogo, <strong>envia fotos reais do seu exemplar</strong>, define a condição seguindo o Guia de Condição e o preço. <strong>Todo anúncio passa por revisão da equipe antes de ir ao ar</strong>: isso protege compradores e vendedores sérios."<span class="src">/ajuda · "Como funciona um anúncio?"</span></p>
+
+      <p>Procurei por qualquer alternativa em massa — <span class="num">importar</span>, <span class="num">CSV</span>, <span class="num">planilha</span>, <span class="num">lote</span>, <span class="num">inventário</span> — na Central de Ajuda, no blog, em Quem Somos e em Taxas. <strong>Nenhuma ocorrência.</strong></p>
+
+      <h4>A conta que um lojista faz</h4>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Cenário</th><th class="n">Cartas</th><th class="n">Tempo/carta</th><th class="n">Trabalho total</th></tr></thead>
+          <tbody>
+            <tr><td>Jogador vendendo duplicatas</td><td class="n">20</td><td class="n">~2 min</td><td class="n">~40 min</td></tr>
+            <tr><td>Loja pequena migrando</td><td class="n">500</td><td class="n">~2 min</td><td class="n">~17 h</td></tr>
+            <tr><td>Loja média migrando</td><td class="n">2.000</td><td class="n">~2 min</td><td class="n">~67 h</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--ink-2);font-size:15px">Estimativa de tempo minha, não medida no produto — mas fotografar cada exemplar dificilmente cabe em menos de 2 minutos, e a fila de revisão manual roda em cima disso.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>É a causa raiz da Parte 1.</strong> 96% do catálogo sem oferta não é um problema de ranqueamento — é o resultado direto de um custo de cadastro que quase ninguém paga.</li>
+        <li><strong>A revisão manual não escala com o crescimento.</strong> Se a migração de lojas funcionar, a fila vira o gargalo — e ela é operada por vocês.</li>
+        <li><strong>O custo mais alto do fluxo não gera valor visível ao comprador.</strong> Verifiquei as páginas de produto: só aparecem a arte oficial do catálogo e o avatar do vendedor. <strong>As fotos reais exigidas não são mostradas a quem compra.</strong> Se elas servem só à moderação, o vendedor paga o preço e o comprador não recebe o benefício de confiança que justificaria a exigência.</li>
+        <li><strong>Multi-plataforma sem sincronia.</strong> Quem vende também no MyPCards e na Liga precisa manter o mesmo estoque em três lugares à mão. Uma carta vendida lá continua anunciada aqui — e o custo desse erro cai sobre o comprador, que espera um pedido que será cancelado.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Tornar a foto proporcional ao risco.</strong> Foto obrigatória acima de um valor, para condições abaixo de NM e para graduadas; arte de catálogo para singles comuns em NM. É o que MyPCards e Ligas fazem, e é por isso que lá um estoque grande é viável.</li>
+          <li><strong>Importação por planilha</strong> com um formato próprio simples e, de preferência, aceitando direto o export do MyPCards e da Liga. Migração assistida é argumento comercial: "traga seu estoque em 10 minutos".</li>
+          <li><strong>Colar lista de texto</strong> para o vendedor pequeno — a mesma capacidade de interpretação que serve à decklist do comprador serve ao inventário do vendedor.</li>
+          <li><strong>Revisão por amostragem e risco</strong> em vez de 100% manual: revisar vendedor novo, item caro e condição declarada alta; liberar o resto e moderar por denúncia.</li>
+          <li><strong>Endereçar o estoque desatualizado</strong> com uma confirmação rápida antes do envio, ou uma janela de cancelamento sem penalidade — enquanto não houver sincronia real.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- V2 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">V02</div>
+      <div class="chip p1">P1 · Alta</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Tornar-se vendedor</dd></div>
+        <div><dt>Frequência</dt><dd>Todo vendedor novo</dd></div>
+        <div><dt>Impacto</dt><dd>Barreira contra o público que a home convida</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>Antes de ver qualquer tela de anúncio, o vendedor declara nome da mãe e renda mensal</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>A home inteira é dedicada ao vendedor casual: <em>"Tem cartas paradas? Existe alguém procurando por elas. Anuncie seu estoque… e venda pelo preço que fizer sentido pra você."</em> É uma promessa de baixa cerimônia.</p>
+
+      <figure>
+        <img src="screenshots/web/00-home-desktop-1440.jpg" alt="Home do Jornada Games com hero Tem cartas paradas e CTA Quero anunciar">
+        <figcaption><b>Evidência 21 · Home</b><br>O hero é 100% orientado ao vendedor. Não há CTA de compra — quem chega para comprar precisa descobrir sozinho por onde começar.
+        <span class="fn">screenshots/00-home-desktop-1440.png</span></figcaption>
+      </figure>
+
+      <p>Clicando em "Quero anunciar", o que aparece é um funil de verificação em 3 etapas. A primeira pede:</p>
+
+      <figure>
+        <img src="screenshots/web/42-vendedor-kyc-dados.jpg" alt="Formulário de cadastro de vendedor pedindo nome completo, nome da mãe, CPF, RG, data de nascimento, renda mensal">
+        <figcaption><b>Evidência 22 · /sell, etapa 1 de 3</b><br>Nome completo, <strong>nome da mãe</strong>, CPF, RG, data de nascimento, <strong>renda mensal</strong>, país de nascimento. Depois, telefone e verificação de identidade com parceiro. Só então se vê a tela de anúncio.
+        <span class="fn">screenshots/42-vendedor-kyc-dados.png</span></figcaption>
+      </figure>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>A distância entre a promessa e a porta é enorme.</strong> Quem abriu uns boosters e quer vender 5 duplicatas não esperava declarar renda.</li>
+        <li><strong>Não há nada para ver antes.</strong> A pessoa não consegue avaliar se vale a pena — quanto custa, como é anunciar, se as cartas dela existem no catálogo — sem antes entregar os documentos. É pedir o compromisso antes de mostrar o produto.</li>
+        <li><strong>A página descarta a navegação.</strong> Todo o site some; a única saída visível é um link marcado <strong>"Sair"</strong> com um <span class="num">✕</span>. Ele na verdade leva a <span class="num">/account</span>, mas ninguém arrisca clicar em algo que parece "sair da conta" no meio de um cadastro.</li>
+      </ul>
+
+      <p style="color:var(--ink-2)"><em>Nota justa: parte disso é obrigação regulatória — a Jornada custodia dinheiro de terceiros, e KYC não é opcional. A crítica é de sequência e de comunicação, não da exigência em si.</em></p>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li><strong>Adiar o KYC até a primeira venda</strong>, ou até um limiar de valor. Deixar a pessoa anunciar e só verificar quando houver dinheiro para movimentar.</li>
+          <li><strong>Mostrar a tela de anúncio antes de pedir documentos</strong>, mesmo que em modo de demonstração. Ver o produto motiva a completar o cadastro.</li>
+          <li><strong>Explicar o porquê no momento do pedido</strong>: "pedimos isso porque a Jornada segura seu dinheiro em custódia". Justificativa reduz abandono mais do que um selo de cadeado.</li>
+          <li><strong>Trocar "Sair" por "Voltar ao site"</strong> e manter o cabeçalho.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- V3 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">V03</div>
+      <div class="chip p2">P2 · Média</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Precificação pelo vendedor</dd></div>
+        <div><dt>Frequência</dt><dd>Todo anúncio</dd></div>
+        <div><dt>Impacto</dt><dd>Preço sem referência; piso distorcido</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>O vendedor não tem em que se basear para precificar — e um vendedor sozinho define o piso do set</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>A Central de Ajuda responde <em>"Como sei quanto uma carta vale?"</em> com: gráfico de histórico baseado em vendas reais. Mas praticamente nenhuma carta tem vendas — todas exibem "Sem vendas no período selecionado" e liquidez <span class="num">0/100</span>. A ferramenta de precificação existe e está vazia.</p>
+      <p>O efeito colateral que observei: um único vendedor listou centenas de cartas de Lorcana a <span class="num">R$ 0,10</span> — e com isso definiu sozinho o "Menor Vendedor" exibido em boa parte do set. O próximo vendedor que chegar vai olhar essa âncora e concluir que não vale a pena anunciar.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Sem referência, o vendedor chuta.</strong> Chutar alto trava a venda; chutar baixo desvaloriza o mercado inteiro — e o segundo é o que está acontecendo.</li>
+        <li><strong>É um ciclo que se auto-alimenta:</strong> preço-piso irreal → vendedores sérios não entram → sem vendas → sem histórico → sem referência.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li>Enquanto não há vendas próprias, ancorar em <strong>referência externa</strong> (preço praticado no mercado brasileiro) claramente rotulada como referência, não como histórico da Jornada.</li>
+          <li>Distinguir na interface <strong>"menor anúncio ativo"</strong> de <strong>"preço de mercado"</strong>. Hoje o primeiro ocupa o lugar do segundo.</li>
+          <li>Sugerir faixa no momento de anunciar — é onde o vendedor toma a decisão e onde ele está mais disposto a aceitar orientação.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- V4 -->
+  <article class="issue">
+    <div class="rail">
+      <div class="id">V04</div>
+      <div class="chip p2">P2 · Média</div>
+      <dl>
+        <div><dt>Fluxo</dt><dd>Home e entrada do produto</dd></div>
+        <div><dt>Frequência</dt><dd>Todo visitante novo</dd></div>
+        <div><dt>Impacto</dt><dd>Metade do marketplace sem porta de entrada</dd></div>
+      </dl>
+    </div>
+    <div class="body">
+      <h3>A home fala só com o vendedor — e é o comprador que precisa aparecer para o vendedor querer ficar</h3>
+
+      <h4>O que aconteceu</h4>
+      <p>O hero, o CTA principal e a mensagem inteira da home são de captação de oferta. Não há CTA de compra, não há entrada para "encontre sua carta", e as cartas em destaque estão todas marcadas "Baixa liquidez".</p>
+      <p>Há um bloco <strong>"Veja o mercado da sua carta em tempo real"</strong> com um campo de busca — que é a coisa mais interessante da página e o argumento mais forte do produto. Ele fica abaixo da dobra, sem CTA, e o placeholder sugere <span class="num">"Ex: Portgas.D.Ace ou OP02-013"</span> — busquei exatamente esse exemplo e recebi 6 resultados, todos sem oferta.</p>
+
+      <h4>Por que isso é um problema</h4>
+      <ul>
+        <li><strong>Entendo a escolha</strong> — em marketplace novo, oferta vem primeiro. Mas o vendedor só fica se houver demanda, e a home não está construindo nenhuma.</li>
+        <li><strong>A demonstração do produto falha na primeira tentativa.</strong> O exemplo sugerido pelo próprio site leva a um beco sem saída. É a pior primeira impressão possível para o recurso mais diferenciado que vocês têm.</li>
+      </ul>
+
+      <div class="box hyp">
+        <h4>Hipótese de solução</h4>
+        <ul>
+          <li>Escolher exemplos de placeholder entre cartas que <strong>têm</strong> oferta e movimento. É uma linha de código e conserta a demonstração.</li>
+          <li>Promover o livro de ofertas ao hero — ele serve aos dois lados: mostra ao comprador que há mercado e ao vendedor que há procura.</li>
+          <li>Dar ao comprador uma porta clara na home, mesmo que secundária ao CTA de anunciar.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<hr class="rule">
+
+<div class="wrap">
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">Priorização</span>
+      <h2>Top 10</h2>
+      <p>Ordenado por impacto no usuário × frequência × impacto na conversão. Não considera esforço de desenvolvimento — não tenho contexto do código.</p>
+    </div>
+
+    <div class="prio">
+      <div class="prio-row"><div class="rank">01</div><div class="ttl">Custo real da compra invisível até o checkout<span>Frete foi 98,6% do total medido. Sem CEP para anônimo, sem estimativa no carrinho, sem alerta de vendedor caro.</span></div><div class="pp"><span class="chip p0" style="margin:0">P0</span></div></div>
+      <div class="prio-row"><div class="rank">02</div><div class="ttl">Custo de anunciar inviabiliza a oferta<span>Foto por exemplar + revisão manual + zero importação. É a causa raiz do catálogo vazio.</span></div><div class="pp"><span class="chip p0" style="margin:0">P0</span></div></div>
+      <div class="prio-row"><div class="rank">03</div><div class="ttl">Busca e coleções exibem por padrão o que não está à venda<span>~96% do catálogo sem oferta; "Apenas disponíveis" desmarcado; ordenação ignora disponibilidade.</span></div><div class="pp"><span class="chip p0" style="margin:0">P0</span></div></div>
+      <div class="prio-row"><div class="rank">04</div><div class="ttl">Comprar uma decklist não tem como terminar<span>10 buscas manuais, 1 carta comprável. Sem importação de lista e sem caminho para registrar demanda.</span></div><div class="pp"><span class="chip p0" style="margin:0">P0</span></div></div>
+      <div class="prio-row"><div class="rank">05</div><div class="ttl">Localização do vendedor ausente onde a compra é decidida<span>O filtro e o "Envia de X" existem — mas não no card da busca nem na linha do anúncio.</span></div><div class="pp"><span class="chip p1" style="margin:0">P1</span></div></div>
+      <div class="prio-row"><div class="rank">06</div><div class="ttl">Painel de filtros inutilizável abaixo de 1024px<span>1.618px de painel sobre 844px de tela, sem fechar, aplicar ou contar resultados.</span></div><div class="pp"><span class="chip p1" style="margin:0">P1</span></div></div>
+      <div class="prio-row"><div class="rank">07</div><div class="ttl">KYC completo antes de ver qualquer tela de anúncio<span>Nome da mãe e renda mensal para vender 5 cartas — contra a promessa da própria home.</span></div><div class="pp"><span class="chip p1" style="margin:0">P1</span></div></div>
+      <div class="prio-row"><div class="rank">08</div><div class="ttl">Numeração divergente da carta impressa<span>Buscar o número que está na carta não encontra a carta. Quebra a busca mais precisa do colecionador.</span></div><div class="pp"><span class="chip p1" style="margin:0">P1</span></div></div>
+      <div class="prio-row"><div class="rank">09</div><div class="ttl">"Numeração" ordena por nome<span>Sem ordenação por número, completar coleção — a tarefa central do colecionador — não tem suporte.</span></div><div class="pp"><span class="chip p1" style="margin:0">P1</span></div></div>
+      <div class="prio-row"><div class="rank">10</div><div class="ttl">Coleções fora do índice do Google<span>Toda página de expansão é noindex com canonical para a home; sitemap com 27 URLs e nenhum produto.</span></div><div class="pp"><span class="chip p2" style="margin:0">P2</span></div></div>
+    </div>
+
+    <div class="box" style="margin-top:28px">
+      <h4>Sobre a ordem</h4>
+      <p>Coloquei o frete (01) acima do catálogo vazio (03) por um motivo: o comprador que <em>encontra</em> a carta e desiste no checkout já provou intenção — é o usuário mais caro de perder e o mais barato de recuperar. E boa parte da solução já está construída no produto; falta movê-la de lugar.</p>
+      <p style="margin-bottom:0">Os itens 02, 03 e 04 são o mesmo problema visto de três ângulos. Se for para escolher <strong>uma</strong> frente, é o item 02 — mas ele é o de ciclo mais longo. A combinação com melhor retorno no curto prazo é <strong>03 + 05</strong> (ranqueamento e localização visível): são mudanças de apresentação sobre dados que já existem, e melhoram a percepção do marketplace sem depender de oferta nova.</p>
+    </div>
+  </section>
+</div>
+
+<hr class="rule">
+
+<div class="wrap">
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">Estratégia</span>
+      <h2>Oportunidades de diferenciação</h2>
+      <p>Todas saíram de um problema observado na investigação. Ordenadas pelo quanto exploram algo que o Jornada já tem e os concorrentes não.</p>
+    </div>
+
+    <div class="opps">
+      <div class="opp">
+        <div class="k">Nasce de B03 + B01</div>
+        <h3>Decklist que vira ordens de compra</h3>
+        <p>Colar uma decklist e transformá-la em <strong>40 ordens no livro de ofertas</strong> de uma vez — não só numa consulta de estoque. É a única forma de a importação de listas funcionar com o catálogo de hoje, e ela converte o maior passivo do produto (catálogo vazio) no ativo que a home promete ao vendedor: procura registrada e visível.</p>
+        <p class="link">Nem MyPCards nem as Ligas têm livro de ofertas — não conseguem copiar isto</p>
+      </div>
+
+      <div class="opp">
+        <div class="k">Nasce de B02</div>
+        <h3>Custo entregue como preço de primeira classe</h3>
+        <p>Pedir o CEP na entrada e passar a exibir preço <em>entregue</em> em toda parte: card de busca, linha do anúncio, resumo do carrinho. Uma carta de R$0,10 que custa R$24,85 deveria dizer isso antes, não depois. O cálculo já existe e já roda para visitante anônimo na página da loja.</p>
+        <p class="link">Gap compartilhado: nenhum concorrente resolve bem</p>
+      </div>
+
+      <div class="opp">
+        <div class="k">Nasce de B02 + B12</div>
+        <h3>Otimizador de carrinho por frete</h3>
+        <p>Dada uma lista, propor a combinação de vendedores com melhor total entregue — e mostrar o trade-off: <em>"4 vendedores: R$80 + R$75 de frete = R$155. Ou 1 vendedor: R$95 + R$20 = R$115."</em> O carrinho de vocês já agrupa por vendedor e já permite dividir pedido; falta a recomendação em cima disso.</p>
+        <p class="link">A maior economia disponível hoje, e ninguém no mercado oferece</p>
+      </div>
+
+      <div class="opp">
+        <div class="k">Nasce de B04 + B14</div>
+        <h3>Marketplace local de verdade</h3>
+        <p>Trazer "Envia de X" para a superfície, ordenar por proximidade, permitir combinar entrega entre quem mora na mesma cidade — e gerar páginas por cidade que servem ao usuário <em>e</em> ao Google. Vocês já têm o dado com granularidade de cidade; ninguém mais tem.</p>
+        <p class="link">Descoberta e SEO resolvidos pela mesma página</p>
+      </div>
+
+      <div class="opp">
+        <div class="k">Nasce de V01</div>
+        <h3>Migração assistida de inventário</h3>
+        <p>Aceitar o export do MyPCards e da Liga, com foto exigida só onde o risco justifica. Transformar a maior barreira de adoção em argumento comercial: <em>"traga seu estoque em 10 minutos"</em>. É a alavanca que destrava todos os problemas da Parte 1.</p>
+        <p class="link">Sem isso, os outros ganhos ficam limitados pela falta de oferta</p>
+      </div>
+
+      <div class="opp">
+        <div class="k">Nasce de B01 + B11</div>
+        <h3>Ausência como informação</h3>
+        <p>Em vez de esconder o que não está à venda, dar função a isso: <em>"Ninguém vende esta carta. 3 pessoas querem comprar por até R$12. Quer anunciar a sua?"</em> Cada beco sem saída de hoje é um convite a anunciar que está sendo desperdiçado — e é exatamente o que o livro de ofertas foi feito para fazer.</p>
+        <p class="link">Aproveita a arquitetura que vocês já escolheram</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="rule">
+
+<div class="wrap">
+  <footer>
+    <p><strong>Sobre este relatório.</strong> Auditoria conduzida em 30 de agosto de 2026, em sessão anônima e autenticada, com navegação real e tarefas de compra executadas de ponta a ponta. Nenhuma compra foi finalizada e nenhum cadastro de vendedor foi enviado. As 44 capturas na pasta <span class="num">screenshots/</span> nomeiam a tela e o fluxo de cada evidência.</p>
+    <p>Onde eu errei na primeira leitura — o filtro de localização, a paginação e os botões de compra — mantive o registro da correção no corpo do texto. Num produto em beta que muda toda semana, achei mais útil mostrar o caminho da conclusão do que apresentar um veredito limpo.</p>
+    <p style="margin-bottom:0;color:var(--ink-3)">Feito por um comprador de TCG que também é Product Designer, com a intenção de ajudar. Boa parte do que está aqui é elogio disfarçado de crítica: vocês construíram as peças difíceis. O trabalho agora é colocá-las onde a decisão acontece.</p>
+  </footer>
+</div>
